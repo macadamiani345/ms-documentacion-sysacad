@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+      // Lenguage and envioronment
+      "target": "es2022",
+  
+      // Módules
+      "baseUrl": "./src",
+      "module": "nodenext",
+      "moduleResolution": "nodenext",
+  
+      // Emit
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "sourceMap": true,
+  
+      // test
+      "strictNullChecks": true,
+  
+      // Interop Constraint
+      "esModuleInterop": true,
+      "noUnusedLocals": false,
+      "noUnusedParameters": false,
+      // "strict": true,
+  
+      "skipLibCheck": true,
+  
+    },
+  
+    "include": ["src", "src/config/client.ts", "test/singleton.ts"],
+    "exclude": ["node_modules", "build"]
+  }
