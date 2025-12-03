@@ -1,3 +1,4 @@
+
 // Interfaz para crear un alumno regular
 
 export interface IRegularCertificate {

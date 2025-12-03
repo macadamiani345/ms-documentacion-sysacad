@@ -1,7 +1,6 @@
 
 import { ServerHTTP } from "../src/index"
-import { StudentCreateInput} from "../src/validators/student.validator"
-import { IAlumno } from "../src/types"
+import { AlumnoCreateInput } from "../src/validators/student.validator"
 import request from 'supertest'
 
 
@@ -24,7 +23,8 @@ afterAll(async () => {
 })
 
 
-const student : IAlumno = {
+
+const student : AlumnoCreateInput = {
     id: 1,
     apellido: 'Diaz Rossi',
     nombre: 'Juan Cruz',
@@ -34,16 +34,16 @@ const student : IAlumno = {
         nombre: 'Documento Nacional de Identidad',
         sigla: 'DNI'
     },
-    fecha_ingreso: new Date(),
+    fecha_ingreso: new Date().toISOString(),
     sexo: 'M',
     nro_legajo: 8873,
-    fecha_nacimiento: new Date(),
+    fecha_nacimiento: new Date().toISOString(),
     especialidad: {
         id: 1,
         nombre: 'Sistemas',
         letra: 'S',
         observacion: 'Ninguna',
-        tipo_espacialidad: 'Ingeniería',
+        tipo_especialidad: 'Ingeniería',
         facultad: {
             id: 1,
             nombre: 'Facultad Regional San Rafael',
