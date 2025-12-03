@@ -2,12 +2,12 @@ import fs from 'fs/promises'
 import path from 'path'
 import PizZip from 'pizzip'
 import Docxtemplater from 'docxtemplater'
-import { RegularCertificateInput } from '../types'
+import { IRegularCertificate } from '../types'
 
 
 export class DOCXGenerator {
 
-    public static regularCertificate = async (studentData : RegularCertificateInput) : Promise<Buffer> => {
+    public static regularCertificate = async (studentData : IRegularCertificate) : Promise<Buffer> => {
 
         try {
             

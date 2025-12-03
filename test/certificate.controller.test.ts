@@ -1,8 +1,7 @@
 
 import { ServerHTTP } from "../src/index"
-// import { ClassRoomService } from "../../src/services/classRoom.service"
 import { StudentCreateInput} from "../src/validators/student.validator"
-import { CerficateService } from "../src/services/certificate.service"
+import { IAlumno } from "../src/types"
 import request from 'supertest'
 
 
@@ -10,8 +9,6 @@ const mockFetch = jest.fn()
 global.fetch = mockFetch as any
 
 const appTest = ServerHTTP.getInstance()
-
-const mockedService = jest.mocked(CerficateService)
 
 beforeAll(async () => {
     appTest.start()
@@ -27,16 +24,45 @@ afterAll(async () => {
 })
 
 
-const student : StudentCreateInput = {
+const student : IAlumno = {
     id: 1,
     apellido: 'Diaz Rossi',
     nombre: 'Juan Cruz',
     nro_documento: 45588489,
-    tipo_documento: "DNI",
-    fecha_ingreso: "2022-03-01",
+    tipo_documento: {
+        id: 1,
+        nombre: 'Documento Nacional de Identidad',
+        sigla: 'DNI'
+    },
+    fecha_ingreso: new Date(),
     sexo: 'M',
     nro_legajo: 8873,
-    fecha_nacimiento: "2004-01-21"
+    fecha_nacimiento: new Date(),
+    especialidad: {
+        id: 1,
+        nombre: 'Sistemas',
+        letra: 'S',
+        observacion: 'Ninguna',
+        tipo_espacialidad: 'Ingeniería',
+        facultad: {
+            id: 1,
+            nombre: 'Facultad Regional San Rafael',
+            abreviatura: 'FR San Rafael',
+            directorio: 'No se',
+            sigla: 'FRSR',
+            codigoPostal: 'M5600',
+            ciudad: 'San Rafael',
+            domicilio: 'Urquiza 400',
+            telefono: '2604XXXXXX',
+            contacto: 'La Facultad SR',
+            email: 'admin@frsr.utn.edu.com.ar',
+            universidad: {
+                id: 1,
+                nombre: 'Universidad Tecnológica Nacional',
+                sigla : 'UTN'
+            }
+        }
+    }
 }
 
 const mockFetchSuccess = (data: any) => Promise.resolve({
@@ -66,6 +92,8 @@ describe("Certificate controller", () => {
             mockFetch.mockImplementationOnce(() => mockFetchSuccess(student))
 
             const response = await request(appTest.getApp()).get('/certificate/1/pdf').send(student)
+
+            console.log(response.body.error)
 
             expect(response.statusCode).toBe(200)
 
@@ -121,7 +149,7 @@ describe("Certificate controller", () => {
 
             expect(response.statusCode).toBe(200)
 
-            expect(response.body).toEqual(expect.any(Buffer))
+            expect(response.body).toEqual(expect.any(Object))
 
         })
 

@@ -2,7 +2,7 @@ import fs from 'fs/promises'
 import Handlebars from 'handlebars'
 import puppeteer, { Browser } from 'puppeteer'
 import path from 'path'
-import { RegularCertificateInput } from '../types'
+import { IRegularCertificate } from '../types'
 
 
 const getRootPathArray = () => path.join(__dirname).split(path.sep).slice(0, -2)
@@ -32,9 +32,9 @@ class TempleteHTML {
 
 export class PDFGenerator {
 
-    public static regularCertificate = async (studentData : RegularCertificateInput) : Promise<Uint8Array<ArrayBufferLike>> => {
+     public static regularCertificate = async (studentData : IRegularCertificate) : Promise<Uint8Array<ArrayBufferLike>> => {
 
-        let browser : Browser
+        let browser : Browser | undefined
 
         try {
 
@@ -58,8 +58,8 @@ export class PDFGenerator {
             // Generamos el archivo PDF con la ayuda de la librería puppeteer
             browser = await puppeteer.launch({
                 headless: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
-                executablePath: '/usr/bin/chromium-browser'
+                // args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                // executablePath: '/usr/bin/chromium-browser'
             })
 
             const page = await browser.newPage()
@@ -81,6 +81,11 @@ export class PDFGenerator {
         } 
         catch (error : any) {
             throw new Error(`${error.message}`)
+        }
+        finally {
+            if (browser) {
+                await browser.close()
+            }
         }
 
     }
