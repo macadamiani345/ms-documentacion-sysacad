@@ -1,0 +1,27 @@
+
+services:
+  backend:
+    # container_name: sysacad-ms-docs
+    image: sysacad-ms-documentation:1.0.0
+    networks:
+      sysacad-network:
+        aliases:
+          - msdocs.sysacad.localhost
+    deploy:
+      replicas: 1
+
+    env_file: [".env"]
+    # ports:
+    #  - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`msdocs.sysacad.localhost`)"
+      - "traefik.http.routers.backend.tls=true"
+      - "traefik.http.services.backend.loadbalancer.server.port=3000"
+      - "traefik.docker.network=sysacad-network"
+
+networks:
+  sysacad-network:
+    name: sysacad-network
+    driver: bridge
+    external: true
