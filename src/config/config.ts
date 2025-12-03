@@ -6,6 +6,7 @@ dotenv.config()
 
 interface ConfigI {
     PORT : string
+    URL_ALUMNOS : string
     Helmet : object
     RateLimit : object
 }
@@ -13,6 +14,7 @@ interface ConfigI {
 const config : ConfigI = {
 
     PORT: process.env.PORT || "3000",
+    URL_ALUMNOS: process.env.URL_ALUMNOS || '',
     Helmet: {
         contentSecurityPolicy: { // Configura CSP
             directives: {

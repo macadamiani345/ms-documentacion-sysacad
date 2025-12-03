@@ -104,7 +104,7 @@
     <header>
         <div>
             <div class="cont-img-two">
-               <img src="data:image/png;base64,{{logoMinisterioSrc}}" alt="Logo Ministerio de Capital Humano"> 
+                <img src="data:image/png;base64,{{logoMinisterioSrc}}" alt="Logo Ministerio de Capital Humano"> 
             </div>
             <div class="cont-img-one">
                 <img src="data:image/png;base64,{{logoUtnSrc}}" alt="Logo UTN">
@@ -120,11 +120,10 @@
         <section>
             <div class="cont-description">
                 <p>
-                    Por la presente se hace constar que <strong>{{apellido}}</strong>, <strong>{{nombre}}</strong> CUIL: <strong>{{cuil}}</strong> - LEGAJO
-                    Número: <strong>{{nro_legajo}}</strong> es Estudiante Regular de la especialidad <strong>{{career}}</strong> que se dicta en 
-                    la <strong>{{faculty}}</strong> de la <strong>{{university}}</strong>. A solicitud del interesado y a los fines de ser 
-                    presentado ante quien corresponda, se le extiende el presente certificado sin enmiendas 
-                    ni raspaduras, en <strong>{{city}}</strong> el <strong>{{date}}</strong>.
+                    Por la presente se hace constar que <strong>{{apellido}}</strong>, <strong>{{nombre}}</strong> <strong>{{tipo_documento.sigla}}</strong>
+                    <strong>{{nrodocumento}}</strong> - LEGAJO Número: <strong>{{nro_legajo}}</strong> es Estudiante Regular de la especialidad <strong>{{especialidad.nombre}}</strong> 
+                    que se dicta en la <strong>{{facultad.nombre}}</strong> de la <strong>{{universidad.nombre}}</strong>. A solicitud del interesado y a los fines de ser 
+                    presentado ante quien corresponda, se le extiende el presente certificado sin enmiendas ni raspaduras, en <strong>{{facultad.ciudad}}</strong> el <strong>{{fecha}}</strong>.
                 </p>
             </div>
         </section>
