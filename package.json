@@ -36,6 +36,7 @@
         "helmet": "^8.1.0",
         "pizzip": "^3.2.0",
         "puppeteer": "^24.12.1",
+        "redis": "^5.9.0",
         "zod": "^4.0.5"
     },
     "devDependencies": {

@@ -1,21 +1,22 @@
 
-import { IRegularCertificate, IAlumno } from "../types"
+
+import { IRegularCertificate, IAlumno, IEspecialidad } from "../types"
 
 
 export class StudentMapper {
 
-    public static fromEntityToCertificateObject = (data : IAlumno) : IRegularCertificate => {
+     public static fromEntityToCertificateObject = (student : IAlumno, speciality : IEspecialidad) : IRegularCertificate => {
 
         return {
-            apellido: data.apellido,
-            nombre: data.nombre,
-            tipo_documento: data.tipo_documento.sigla,
-            nro_documento: data.nro_documento,
-            nro_legajo: data.nro_legajo,
-            especialidad: data.especialidad.nombre,
-            facultad: data.especialidad.facultad.nombre,
-            universidad: data.especialidad.facultad.universidad.nombre,
-            ciudad: data.especialidad.facultad.ciudad,
+            apellido: student.apellido,
+            nombre: student.nombre,
+            tipo_documento: student.tipo_documento.sigla,
+            nro_documento: student.nro_documento,
+            nro_legajo: student.nro_legajo,
+            especialidad: speciality.especialidad,
+            facultad: speciality.facultad,
+            universidad: speciality.universidad,
+            ciudad: 'San Rafael',
             fecha: `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`
         }
     }

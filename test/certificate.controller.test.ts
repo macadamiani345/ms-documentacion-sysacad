@@ -1,13 +1,28 @@
 
 import { ServerHTTP } from "../src/index"
 import { AlumnoCreateInput } from "../src/validators/student.validator"
+import { EspecialidadCreateInput } from "../src/validators/specialty.validator"
+import { StudentService } from "../src/services/student.service"
+import { SpecialityService } from "../src/services/speciality.service"
 import request from 'supertest'
 
 
-const mockFetch = jest.fn()
-global.fetch = mockFetch as any
+jest.mock('../src/services/student.service', () => ({
+    StudentService: {
+        getById: jest.fn(),
+    }
+}))
+
+jest.mock('../src/services/speciality.service', () => ({
+    SpecialityService: {
+        getById: jest.fn(),
+    }
+}))
 
 const appTest = ServerHTTP.getInstance()
+
+const mockedStudentService = jest.mocked(StudentService)
+const mockedSpecialityService = jest.mocked(SpecialityService)
 
 beforeAll(async () => {
     appTest.start()
@@ -34,51 +49,21 @@ const student : AlumnoCreateInput = {
         nombre: 'Documento Nacional de Identidad',
         sigla: 'DNI'
     },
-    fecha_ingreso: new Date().toISOString(),
+    fecha_nacimiento: new Date().toISOString(),
     sexo: 'M',
     nro_legajo: 8873,
-    fecha_nacimiento: new Date().toISOString(),
-    especialidad: {
-        id: 1,
-        nombre: 'Sistemas',
-        letra: 'S',
-        observacion: 'Ninguna',
-        tipo_especialidad: 'Ingeniería',
-        facultad: {
-            id: 1,
-            nombre: 'Facultad Regional San Rafael',
-            abreviatura: 'FR San Rafael',
-            directorio: 'No se',
-            sigla: 'FRSR',
-            codigoPostal: 'M5600',
-            ciudad: 'San Rafael',
-            domicilio: 'Urquiza 400',
-            telefono: '2604XXXXXX',
-            contacto: 'La Facultad SR',
-            email: 'admin@frsr.utn.edu.com.ar',
-            universidad: {
-                id: 1,
-                nombre: 'Universidad Tecnológica Nacional',
-                sigla : 'UTN'
-            }
-        }
-    }
+    fecha_ingreso: new Date().toISOString(),
+    id_especialidad: 1
 }
 
-const mockFetchSuccess = (data: any) => Promise.resolve({
-    ok: true,
-    status: 200,
-    json: () => Promise.resolve(data), 
-} as Response)
+const speciality : EspecialidadCreateInput = {
+    id: 1,
+    especialidad: 'Sistemas',
+    facultad: 'FRSR',
+    universidad: 'UTN',
+    ciudad: 'San Rafael'
+}
 
-const mockErrorNotFound = {error: "El recurso con el ID solicitado no existe"}
-const mockErrorFail = {error: "Fallo al solicitar información del Alumno 1"}
-
-const mockFetchError = (data: any, code: number) => Promise.resolve({
-    ok: false,
-    status: code,
-    json: () => Promise.resolve(data), 
-} as Response)
 
 
 describe("Certificate controller", () => {
@@ -89,11 +74,10 @@ describe("Certificate controller", () => {
 
         test("Should response with a 200 status code and buffer data", async () => {
 
-            mockFetch.mockImplementationOnce(() => mockFetchSuccess(student))
+            mockedStudentService.getById.mockResolvedValue(student)
+            mockedSpecialityService.getById.mockResolvedValue(speciality)
 
-            const response = await request(appTest.getApp()).get('/certificate/1/pdf').send(student)
-
-            console.log(response.body.error)
+            const response = await request(appTest.getApp()).get('/certificate/1/pdf').send()
 
             expect(response.statusCode).toBe(200)
 
@@ -104,7 +88,7 @@ describe("Certificate controller", () => {
         
         test("Should response with a 400 status code and error", async () => {
 
-            const response = await request(appTest.getApp()).get('/certificate/hola/pdf').send(student)
+            const response = await request(appTest.getApp()).get('/certificate/hola/pdf').send()
 
             expect(response.statusCode).toBe(400)
 
@@ -114,9 +98,10 @@ describe("Certificate controller", () => {
 
         test("Should response with a 404 status code and buffer data", async () => {
 
-            mockFetch.mockImplementationOnce(() => mockFetchError(mockErrorNotFound, 404))
+            mockedStudentService.getById.mockRejectedValue(new Error('El recurso con el ID solicitado no existe'))
+            mockedSpecialityService.getById.mockResolvedValue(speciality)
 
-            const response = await request(appTest.getApp()).get('/certificate/1/pdf').send(student)
+            const response = await request(appTest.getApp()).get('/certificate/1/pdf').send()
 
             expect(response.statusCode).toBe(404)
 
@@ -126,9 +111,10 @@ describe("Certificate controller", () => {
 
         test("Should response with a 503 status code and buffer data", async () => {
 
-            mockFetch.mockImplementationOnce(() => mockFetchError(mockErrorNotFound, 500))
+                mockedStudentService.getById.mockRejectedValue(new Error('Fallo al solicitar información del Alumno 1'))
+            mockedSpecialityService.getById.mockResolvedValue(speciality)
 
-            const response = await request(appTest.getApp()).get('/certificate/1/pdf').send(student)
+            const response = await request(appTest.getApp()).get('/certificate/1/pdf').send()
 
             expect(response.statusCode).toBe(503)
 
@@ -143,7 +129,8 @@ describe("Certificate controller", () => {
 
         test("Should response with a 200 status code and buffer data", async () => {
 
-            mockFetch.mockImplementationOnce(() => mockFetchSuccess(student))
+            mockedStudentService.getById.mockResolvedValue(student)
+            mockedSpecialityService.getById.mockResolvedValue(speciality)
 
             const response = await request(appTest.getApp()).get('/certificate/1/docx').send(student)
 
@@ -165,7 +152,8 @@ describe("Certificate controller", () => {
 
         test("Should response with a 404 status code and buffer data", async () => {
 
-            mockFetch.mockImplementationOnce(() => mockFetchError(mockErrorNotFound, 404))
+            mockedStudentService.getById.mockRejectedValue(new Error('El recurso con el ID solicitado no existe'))
+            mockedSpecialityService.getById.mockResolvedValue(speciality)
 
             const response = await request(appTest.getApp()).get('/certificate/1/docx').send(student)
 
@@ -177,7 +165,8 @@ describe("Certificate controller", () => {
 
         test("Should response with a 503 status code and buffer data", async () => {
 
-            mockFetch.mockImplementationOnce(() => mockFetchError(mockErrorNotFound, 500))
+            mockedStudentService.getById.mockRejectedValue(new Error('Fallo al solicitar información del Alumno 1'))
+            mockedSpecialityService.getById.mockResolvedValue(speciality)
 
             const response = await request(appTest.getApp()).get('/certificate/1/pdf').send(student)
 

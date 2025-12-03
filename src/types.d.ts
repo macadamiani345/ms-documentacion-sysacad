@@ -20,11 +20,11 @@ export interface IAlumno {
     nombre: string
     nro_documento: number
     tipo_documento: ITipoDocumento
-    fecha_nacimiento: Date
+    fecha_nacimiento: string
     sexo: "M" | "F"
     nro_legajo: number
-    fecha_ingreso: Date
-    especialidad: IEspecialidad
+    fecha_ingreso: string
+    id_especialidad: number
 }
 
 export interface ITipoDocumento {
@@ -34,31 +34,7 @@ export interface ITipoDocumento {
 }
 
 export interface IEspecialidad {
-    id: number,
-    nombre: string
-    letra: string
-    observacion: string
-    tipo_espacialidad: string
-    facultad: IFacultad
-}
-
-export interface IFacultad {
-    id: number
-    nombre: string
-    abreviatura: string
-    directorio: string
-    sigla: string
-    codigoPostal: string
-    ciudad: string
-    domicilio: string
-    telefono: string
-    contacto: string
-    email: string
-    universidad: IUniversidad
-}
-
-export interface IUniversidad {
-    id: number
-    nombre: string
-    sigla : string
+    especialidad: string,
+    facultad: string,
+    universidad: string,
 }
