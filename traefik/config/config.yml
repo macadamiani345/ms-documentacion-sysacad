@@ -1,0 +1,19 @@
+
+http:
+  routers:
+    traefik:
+      rule: "Host(`traefik.sysacad.localhost`)"
+      service: "api@internal"
+      tls:
+        domains:
+          - main: "sysacad.localhost"
+            sans:
+              - "*.sysacad.localhost"
+          - main: "sysacad.local"
+            sans:
+              - "*.sysacad.local"
+
+tls:
+  certificates:
+    - certFile: "/etc/certs/cert.pem"
+      keyFile: "/etc/certs/key.pem"
