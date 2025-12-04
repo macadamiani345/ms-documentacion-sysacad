@@ -1,6 +1,5 @@
-FROM node:22-alpine
 
-WORKDIR /app
+FROM node:22-alpine AS builder
 
 RUN apk add --no-cache \
     chromium \
@@ -9,14 +8,18 @@ RUN apk add --no-cache \
     freetype-dev \
     harfbuzz \
     ca-certificates \
-    ttf-freefont
+    ttf-freefont \
+    git \
+    && rm -rf /var/cache/apk/*
+
+WORKDIR /app
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 COPY package*.json ./
 
-RUN npm install
+
 RUN npm ci --unsafe-perm=false --no-audit --no-fund
 
 COPY tsconfig.json ./
@@ -25,10 +28,28 @@ COPY src ./src
  
 RUN npm run build
 
-COPY src/views ./dist/views
+FROM node:22-alpine
 
-RUN npm ci --only=production --no-audit --no-fund && \
-    rm -rf src tsconfig.json
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    && rm -rf /var/cache/apk/*
+
+RUN addgroup -g 1001 nodeapp && adduser -S -G nodeapp -u 1001 nodeapp
+
+WORKDIR /app
+
+COPY --chown=nodeapp:nodeapp --from=builder /app/package*.json ./
+COPY --chown=nodeapp:nodeapp --from=builder /app/node_modules ./node_modules
+COPY --chown=nodeapp:nodeapp --from=builder /app/dist ./dist
+COPY --chown=nodeapp:nodeapp --from=builder /app/public ./public
+COPY --chown=nodeapp:nodeapp --from=builder /app/src/views ./dist/views
+
+USER nodeapp
 
 
 ENV NODE_ENV=production \
@@ -36,4 +57,4 @@ ENV NODE_ENV=production \
 
 EXPOSE 3000
 
-CMD ["dist/index.js"]
+CMD ["node", "dist/index.js"]
