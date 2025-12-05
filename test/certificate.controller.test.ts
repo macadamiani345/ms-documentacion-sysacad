@@ -57,11 +57,9 @@ const student : AlumnoCreateInput = {
 }
 
 const speciality : EspecialidadCreateInput = {
-    id: 1,
     especialidad: 'Sistemas',
     facultad: 'FRSR',
     universidad: 'UTN',
-    ciudad: 'San Rafael'
 }
 
 
