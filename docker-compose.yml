@@ -8,7 +8,7 @@ services:
         aliases:
           - msdocs.sysacad.localhost
     deploy:
-      replicas: 1
+      replicas: 5
 
     env_file: [".env"]
     # ports:
@@ -18,6 +18,13 @@ services:
       - "traefik.http.routers.backend.rule=Host(`msdocs.sysacad.localhost`)"
       - "traefik.http.routers.backend.tls=true"
       - "traefik.http.services.backend.loadbalancer.server.port=3000"
+      - "traefik.docker.network=sysacad-network"
+      # Patron Circuit Breaker
+      - "traefik.http.middlewares.backend.circuitbreaker.expression=LatencyAtQuantileMS(50.0) > 100"
+      - "traefik.http.middlewares.backend.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+      - "traefik.http.middlewares.backend.circuitbreaker.expression=NetworkErrorRatio() > 0.5"
+      - "traefik.http.middlewares.backend.retry.attempts=4"
+      - "traefik.http.middlewares.backend.retry.initialinterval=100ms"            
       - "traefik.docker.network=sysacad-network"
 
 networks:

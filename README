@@ -22,6 +22,12 @@ LEVANTAR LA APLICACIÓN - PASO A PASO:
 7. Ejecutar el comando 'docker compose down' para bajar el microservicio (una vez finalizado el uso del mismo)
 
 
+PARA REALIZA TEST DE CARGA
+
+1. Ejecutar para instalar K6 "winget install k6 --source winget"
+2. Ejecutar en la carpeta raíz "k6 run --out web-dashboard .\msdocs_test.js"
+
+
 ENDPOINTS DISPONIBLES
 
 /certificate/:alumno_id/pdf (obtener certificado de alumno regular en formato PDF)

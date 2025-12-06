@@ -24,6 +24,7 @@ const appTest = ServerHTTP.getInstance()
 const mockedStudentService = jest.mocked(StudentService)
 const mockedSpecialityService = jest.mocked(SpecialityService)
 
+
 beforeAll(async () => {
     appTest.start()
 })
@@ -109,7 +110,7 @@ describe("Certificate controller", () => {
 
         test("Should response with a 503 status code and buffer data", async () => {
 
-                mockedStudentService.getById.mockRejectedValue(new Error('Fallo al solicitar información del Alumno 1'))
+            mockedStudentService.getById.mockRejectedValue(new Error('Fallo al solicitar información del Alumno 1'))
             mockedSpecialityService.getById.mockResolvedValue(speciality)
 
             const response = await request(appTest.getApp()).get('/certificate/1/pdf').send()
